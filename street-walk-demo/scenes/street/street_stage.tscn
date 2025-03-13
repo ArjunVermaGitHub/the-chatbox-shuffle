@@ -1,0 +1,281 @@
+[gd_scene load_steps=38 format=3 uid="uid://bxfupcomvb5la"]
+
+[ext_resource type="PackedScene" uid="uid://be4nipuu1lt8e" path="res://scenes/player/player.tscn" id="1_bv5t2"]
+[ext_resource type="Texture2D" uid="uid://cdcmttpc6dj0c" path="res://assets/street/floor_original.png" id="1_gv5aj"]
+[ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="1_kvjxr"]
+[ext_resource type="Texture2D" uid="uid://btuijup1qysul" path="res://assets/street/back_wall_original.png" id="2_sjylx"]
+[ext_resource type="PackedScene" uid="uid://bang7dvy32ewt" path="res://scenes/npc/npc.tscn" id="3_fbr2s"]
+[ext_resource type="Script" path="res://scenes/street/room_entrance.gd" id="4_gukao"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_h0c2m"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="5_0kcwn"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="6_xqnmb"]
+[ext_resource type="Texture2D" uid="uid://b10gwa2jpfpeu" path="res://assets/parallax/skyscrapers.png" id="10_0oe3f"]
+[ext_resource type="Texture2D" uid="uid://c3fjqso88m0n5" path="res://assets/parallax/russia-moscow-cityscape-4k-rl.jpg" id="10_u2d1y"]
+[ext_resource type="Texture2D" uid="uid://cr2c7jl866vo0" path="res://assets/parallax/car.png" id="11_246nj"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_xxaut"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+sky_energy_multiplier = 2.85
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_jftr7"]
+sky_material = SubResource("ProceduralSkyMaterial_xxaut")
+
+[sub_resource type="Environment" id="Environment_n6fxy"]
+background_mode = 2
+sky = SubResource("Sky_jftr7")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bxw6n"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_a1qsw"]
+size = Vector2(20, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hcpbe"]
+albedo_texture = ExtResource("1_gv5aj")
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_tjqxs"]
+data = PackedVector3Array(10, 0, 1, -10, 0, 1, 10, 0, -1, -10, 0, 1, -10, 0, -1, 10, 0, -1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_221st"]
+transparency = 1
+albedo_texture = ExtResource("2_sjylx")
+backlight_enabled = true
+backlight = Color(0.93408, 0.93408, 0.93408, 1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_qve05"]
+data = PackedVector3Array(10, 0, 1, -10, 0, 1, 10, 0, -1, -10, 0, 1, -10, 0, -1, 10, 0, -1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_xlnr8"]
+size = Vector2(20, 2)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_5u602"]
+data = PackedVector3Array(10, 0, 1, -10, 0, 1, 10, 0, -1, -10, 0, 1, -10, 0, -1, 10, 0, -1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tnwqe"]
+size = Vector2(3, 2)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_coeyg"]
+data = PackedVector3Array(1.5, 0, 1, -1.5, 0, 1, 1.5, 0, -1, -1.5, 0, 1, -1.5, 0, -1, 1.5, 0, -1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_hrvm2"]
+size = Vector2(3, 2)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ypy6m"]
+data = PackedVector3Array(1.5, 0, 1, -1.5, 0, 1, 1.5, 0, -1, -1.5, 0, 1, -1.5, 0, -1, 1.5, 0, -1)
+
+[sub_resource type="Environment" id="Environment_ufglb"]
+
+[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_n5kl7"]
+
+[sub_resource type="Resource" id="Resource_ncaxd"]
+script = ExtResource("6_xqnmb")
+duration = 1.0
+transition = 0
+ease = 2
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_gjytm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uqpeh"]
+transparency = 1
+albedo_color = Color(0.529067, 0.529067, 0.529067, 1)
+albedo_texture = ExtResource("10_0oe3f")
+anisotropy = 0.39
+ao_light_affect = 0.81
+heightmap_scale = 16.0
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
+backlight_enabled = true
+backlight = Color(0.986752, 0.986752, 0.986752, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jor34"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_03ccb"]
+albedo_texture = ExtResource("10_u2d1y")
+anisotropy = 0.39
+ao_light_affect = 0.81
+heightmap_scale = 16.0
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
+backlight_enabled = true
+backlight = Color(1, 1, 1, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_t2wic"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h7eig"]
+transparency = 1
+albedo_texture = ExtResource("11_246nj")
+albedo_texture_force_srgb = true
+emission_enabled = true
+rim = 0.05
+rim_tint = 0.16
+clearcoat_roughness = 0.85
+anisotropy = 0.39
+ao_light_affect = 0.81
+heightmap_scale = 16.0
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
+subsurf_scatter_strength = 0.54
+subsurf_scatter_skin_mode = true
+backlight_enabled = true
+backlight = Color(0.843182, 0.843185, 0.843182, 1)
+refraction_scale = 0.8
+distance_fade_max_distance = 0.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b0ej8"]
+
+[node name="StreetStage" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_n6fxy")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+light_color = Color(0.801402, 0.800491, 0.798004, 1)
+shadow_enabled = true
+
+[node name="StateChartDebugger" parent="." instance=ExtResource("1_kvjxr")]
+offset_left = 770.0
+offset_top = -7.0
+offset_right = -10.0
+offset_bottom = -285.0
+enabled = false
+initial_node_to_watch = NodePath("../NPC/StateChart")
+
+[node name="Player" parent="." instance=ExtResource("1_bv5t2")]
+transform = Transform3D(0.49, 0, 0, 0, 0.49, 0, 0, 0, 0.49, -6.914, 0.352, 0)
+
+[node name="NPC" parent="." instance=ExtResource("3_fbr2s")]
+transform = Transform3D(0.325, 0, 0, 0, 0.325, 0, 0, 0, 0.325, -0.415, 0.422, -0.516)
+
+[node name="AnimatedSprite3D" parent="NPC" index="0"]
+transform = Transform3D(0.125, 0, 0, 0, 0.125, 0, 0, 0, 0.125, 0, 0, 0)
+
+[node name="RoomEntrance" type="Area3D" parent="."]
+script = ExtResource("4_gukao")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomEntrance"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3, 0.385, -0.885)
+shape = SubResource("BoxShape3D_bxw6n")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.76701e-05, -0.00508714, 0.000668764)
+mesh = SubResource("PlaneMesh_a1qsw")
+surface_material_override/0 = SubResource("StandardMaterial3D_hcpbe")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.76701e-05, -0.00508714, 0.000668764)
+shape = SubResource("ConcavePolygonShape3D_tjqxs")
+
+[node name="Street Wall" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Street Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -1.013)
+mesh = SubResource("PlaneMesh_a1qsw")
+surface_material_override/0 = SubResource("StandardMaterial3D_221st")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Street Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.748, -1.013)
+shape = SubResource("ConcavePolygonShape3D_qve05")
+
+[node name="ForeGround" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ForeGround"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00286579, 1.00307, -0.984882)
+visible = false
+mesh = SubResource("PlaneMesh_xlnr8")
+
+[node name="Invisible Collision" type="CollisionShape3D" parent="ForeGround"]
+transform = Transform3D(0.82, 0, 0, 0, 0.82, 0, 0, 0, 0.82, 0.00286579, 1.00307, -0.984882)
+shape = SubResource("ConcavePolygonShape3D_5u602")
+
+[node name="Left Collision Box" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.675, 0.1, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Left Collision Box"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -10, 0, -1)
+visible = false
+mesh = SubResource("PlaneMesh_tnwqe")
+
+[node name="Invisible Collision" type="CollisionShape3D" parent="Left Collision Box"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -10, 0, -1)
+shape = SubResource("ConcavePolygonShape3D_coeyg")
+
+[node name="Right Collision Box" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Right Collision Box"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 10, 0, -1)
+visible = false
+mesh = SubResource("PlaneMesh_hrvm2")
+
+[node name="Invisible Collision" type="CollisionShape3D" parent="Right Collision Box"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 8.45, 0, -1)
+shape = SubResource("ConcavePolygonShape3D_ypy6m")
+
+[node name="Camera Manager" type="Node" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Camera Manager"]
+physics_interpolation_mode = 2
+transform = Transform3D(1, 0, 0, 0, 0.962218, 0.272281, 0, -0.272281, 0.962218, -6.914, 1.66988, 3.09077)
+environment = SubResource("Environment_ufglb")
+attributes = SubResource("CameraAttributesPhysical_n5kl7")
+doppler_tracking = 2
+size = 2.18
+
+[node name="PhantomCameraHost" type="Node" parent="Camera Manager/Camera3D"]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("4_h0c2m")
+
+[node name="PhantomCamera3D" type="Node3D" parent="Camera Manager" node_paths=PackedStringArray("follow_target")]
+transform = Transform3D(1, 0, 0, 0, 0.962216, 0.27228, 0, -0.27228, 0.962216, -6.914, 1.66988, 3.09077)
+top_level = true
+script = ExtResource("5_0kcwn")
+priority = 1
+follow_mode = 5
+follow_target = NodePath("../../Player")
+tween_resource = SubResource("Resource_ncaxd")
+tween_on_load = false
+follow_offset = Vector3(0, 0.855, 1.455)
+follow_axis_lock = 6
+follow_distance = 1.7
+dead_zone_width = 0.536
+dead_zone_height = 0.882
+spring_length = 1.7
+_preview_noise = false
+
+[node name="ParallaxBackgrounds" type="Node3D" parent="."]
+
+[node name="Skyscrapers" type="MeshInstance3D" parent="ParallaxBackgrounds"]
+transform = Transform3D(27.33, 0, 0, 0, -5.41803e-07, -6.87, 0, 12.395, -3.00297e-07, 0, -0.935, -28.225)
+mesh = SubResource("PlaneMesh_gjytm")
+surface_material_override/0 = SubResource("StandardMaterial3D_uqpeh")
+
+[node name="Moscow Cityscape" type="MeshInstance3D" parent="ParallaxBackgrounds"]
+transform = Transform3D(31.515, 0, 0, 0, -5.41803e-07, -8.08, 0, 12.395, -3.53188e-07, 0, 0.355, -47.74)
+mesh = SubResource("PlaneMesh_jor34")
+surface_material_override/0 = SubResource("StandardMaterial3D_03ccb")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="ParallaxBackgrounds"]
+
+[node name="car" type="MeshInstance3D" parent="ParallaxBackgrounds/StaticBody3D"]
+transform = Transform3D(1.593, 0, 0, 0, -3.38763e-08, -1.48, 0, 0.775, -6.46929e-08, -1.63034, 0.290339, 0.895)
+mesh = SubResource("PlaneMesh_t2wic")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_h7eig")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ParallaxBackgrounds/StaticBody3D"]
+transform = Transform3D(2.7, 0, 0, 0, 1.23, 0, 0, 0, 1.23, -1.419, 0.612, 0.956)
+shape = SubResource("BoxShape3D_b0ej8")
+
+[editable path="NPC"]
+[editable path="NPC/DialogueUI"]

@@ -1,0 +1,218 @@
+[gd_scene load_steps=23 format=3 uid="uid://bang7dvy32ewt"]
+
+[ext_resource type="Script" path="res://scenes/npc/npc.gd" id="1_w8kth"]
+[ext_resource type="Texture2D" uid="uid://dckms5nbfyfi6" path="res://assets/player/updated_positions/JUMP/jumpLance.png" id="2_rs0e7"]
+[ext_resource type="Texture2D" uid="uid://qasvse1a3gr5" path="res://assets/NPC/Brock.png" id="3_2sfb3"]
+[ext_resource type="Texture2D" uid="uid://cddnwtw3r2uyy" path="res://assets/player/updated_positions/WALKING/2.png" id="4_ybg0o"]
+[ext_resource type="Texture2D" uid="uid://dldl4m1u7dqer" path="res://assets/player/updated_positions/WALKING/3.png" id="5_u2k18"]
+[ext_resource type="Texture2D" uid="uid://c3tog3n8t85dj" path="res://assets/player/updated_positions/WALKING/4.png" id="6_d1xa0"]
+[ext_resource type="Texture2D" uid="uid://dcghfbrtodncq" path="res://assets/player/updated_positions/WALKING/5.png" id="7_g1y1p"]
+[ext_resource type="Texture2D" uid="uid://dsxeyxdock4st" path="res://assets/player/updated_positions/WALKING/6.png" id="8_6lvfv"]
+[ext_resource type="Texture2D" uid="uid://bsl46dt14ymof" path="res://assets/player/updated_positions/WALKING/7.png" id="9_eoo75"]
+[ext_resource type="Texture2D" uid="uid://d3w5orma4c8n4" path="res://assets/player/updated_positions/WALKING/8.png" id="10_5wwb6"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="11_p1ki1"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/parallel_state.gd" id="12_oad24"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="13_haevm"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="14_iwcg7"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="15_pegtg"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/expression_guard.gd" id="16_cm51j"]
+[ext_resource type="PackedScene" uid="uid://dk74vr43v748w" path="res://scenes/dialogue/dialogue_ui.tscn" id="17_cwpgq"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_84je8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_rs0e7")
+}],
+"loop": true,
+"name": &"Fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_2sfb3")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_rs0e7")
+}],
+"loop": true,
+"name": &"Jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_ybg0o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_u2k18")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_d1xa0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_g1y1p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_6lvfv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_eoo75")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_5wwb6")
+}],
+"loop": true,
+"name": &"Move",
+"speed": 5.0
+}]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_irxec"]
+size = Vector3(0.69, 1.469, 0.205)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wve3a"]
+size = Vector3(2.83, 2.22, 2)
+
+[sub_resource type="Resource" id="Resource_5spoy"]
+script = ExtResource("16_cm51j")
+expression = "player_in_range == true"
+
+[sub_resource type="Resource" id="Resource_yqbd5"]
+script = ExtResource("16_cm51j")
+expression = "player_in_range == true"
+
+[node name="NPC" type="CharacterBody3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.741688, 0, 0)
+script = ExtResource("1_w8kth")
+
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
+transform = Transform3D(-4.37114e-09, 0, -0.1, 0, 0.1, 0, 0.1, 0, -4.37114e-09, 0, 0, 0)
+alpha_cut = 1
+texture_filter = 0
+sprite_frames = SubResource("SpriteFrames_84je8")
+animation = &"Idle"
+frame_progress = 0.805894
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0795898, 0)
+shape = SubResource("BoxShape3D_irxec")
+
+[node name="DetectionArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = SubResource("BoxShape3D_wve3a")
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("11_p1ki1")
+initial_expression_properties = {
+"dialogue_active": false,
+"message_received": false,
+"player_in_range": false
+}
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("12_oad24")
+
+[node name="Interaction" type="Node" parent="StateChart/Root"]
+script = ExtResource("13_haevm")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateChart/Root/Interaction"]
+script = ExtResource("14_iwcg7")
+
+[node name="Transition" type="Node" parent="StateChart/Root/Interaction/Idle"]
+script = ExtResource("15_pegtg")
+to = NodePath("../../PlayerDetected")
+event = &"player_entered_area"
+delay_in_seconds = "0.0"
+
+[node name="PlayerDetected" type="Node" parent="StateChart/Root/Interaction"]
+script = ExtResource("14_iwcg7")
+
+[node name="Transition" type="Node" parent="StateChart/Root/Interaction/PlayerDetected"]
+script = ExtResource("15_pegtg")
+to = NodePath("../../Idle")
+event = &"player_exited_area"
+delay_in_seconds = "0.0"
+
+[node name="Transition2" type="Node" parent="StateChart/Root/Interaction/PlayerDetected"]
+script = ExtResource("15_pegtg")
+to = NodePath("../../Conversing")
+event = &"t_pressed"
+guard = SubResource("Resource_5spoy")
+delay_in_seconds = "0.0"
+
+[node name="Conversing" type="Node" parent="StateChart/Root/Interaction"]
+script = ExtResource("14_iwcg7")
+
+[node name="Transition" type="Node" parent="StateChart/Root/Interaction/Conversing"]
+script = ExtResource("15_pegtg")
+to = NodePath("../../PlayerDetected")
+event = &"dialogue_closed"
+delay_in_seconds = "0.0"
+
+[node name="DialogueFlow" type="Node" parent="StateChart/Root"]
+script = ExtResource("13_haevm")
+initial_state = NodePath("Closed")
+
+[node name="Closed" type="Node" parent="StateChart/Root/DialogueFlow"]
+script = ExtResource("14_iwcg7")
+
+[node name="Transition" type="Node" parent="StateChart/Root/DialogueFlow/Closed"]
+script = ExtResource("15_pegtg")
+to = NodePath("../../Input")
+event = &"t_pressed"
+guard = SubResource("Resource_yqbd5")
+delay_in_seconds = "0.0"
+
+[node name="Input" type="Node" parent="StateChart/Root/DialogueFlow"]
+script = ExtResource("14_iwcg7")
+
+[node name="Transition" type="Node" parent="StateChart/Root/DialogueFlow/Input"]
+script = ExtResource("15_pegtg")
+to = NodePath("../../DisplayingNPC")
+event = &"message_sent"
+delay_in_seconds = "0.0"
+
+[node name="Transition2" type="Node" parent="StateChart/Root/DialogueFlow/Input"]
+script = ExtResource("15_pegtg")
+to = NodePath("../../Closed")
+event = &"close_button_pressed"
+delay_in_seconds = "0.0"
+
+[node name="DisplayingNPC" type="Node" parent="StateChart/Root/DialogueFlow"]
+script = ExtResource("14_iwcg7")
+
+[node name="Transition" type="Node" parent="StateChart/Root/DialogueFlow/DisplayingNPC"]
+script = ExtResource("15_pegtg")
+to = NodePath("../../Input")
+event = &"npc_response_shown"
+delay_in_seconds = ""
+
+[node name="Transition2" type="Node" parent="StateChart/Root/DialogueFlow/DisplayingNPC"]
+script = ExtResource("15_pegtg")
+to = NodePath("../../Closed")
+event = &"close_button_pressed"
+delay_in_seconds = "0.0"
+
+[node name="DialogueUI" parent="." instance=ExtResource("17_cwpgq")]
+
+[node name="RichTextLabel" parent="DialogueUI/Panel/VBoxContainer/ResponseContainer" index="0"]
+tab_size = 5
+
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
+[connection signal="state_entered" from="StateChart/Root/Interaction/Idle" to="." method="_on_idle_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/Interaction/PlayerDetected" to="." method="_on_player_detected_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/Interaction/Conversing" to="." method="_on_conversing_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/DialogueFlow/Closed" to="." method="_on_closed_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/DialogueFlow/Input" to="." method="_on_input_state_entered"]
+[connection signal="state_entered" from="StateChart/Root/DialogueFlow/DisplayingNPC" to="." method="_on_displaying_npc_state_entered"]
+[connection signal="pressed" from="DialogueUI/Panel/VBoxContainer/InputContainer/SendButton" to="." method="_on_send_button_pressed"]
+[connection signal="pressed" from="DialogueUI/Panel/VBoxContainer/ResponseContainer/CloseButton" to="." method="_on_close_button_pressed"]
+
+[editable path="DialogueUI"]

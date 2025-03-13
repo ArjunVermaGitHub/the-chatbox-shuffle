@@ -1,0 +1,109 @@
+[gd_scene load_steps=17 format=3 uid="uid://be4nipuu1lt8e"]
+
+[ext_resource type="Script" path="res://scenes/player/player.gd" id="1_x3aqs"]
+[ext_resource type="Texture2D" uid="uid://gt71t1vx3lx0" path="res://assets/player/updated_positions/WALKING/1.png" id="2_qq6uy"]
+[ext_resource type="Texture2D" uid="uid://dckms5nbfyfi6" path="res://assets/player/updated_positions/JUMP/jumpLance.png" id="3_oua7d"]
+[ext_resource type="Texture2D" uid="uid://cddnwtw3r2uyy" path="res://assets/player/updated_positions/WALKING/2.png" id="4_xtjxl"]
+[ext_resource type="Texture2D" uid="uid://dldl4m1u7dqer" path="res://assets/player/updated_positions/WALKING/3.png" id="5_e118a"]
+[ext_resource type="Texture2D" uid="uid://c3tog3n8t85dj" path="res://assets/player/updated_positions/WALKING/4.png" id="6_enc1c"]
+[ext_resource type="Texture2D" uid="uid://dcghfbrtodncq" path="res://assets/player/updated_positions/WALKING/5.png" id="7_neg4h"]
+[ext_resource type="Texture2D" uid="uid://dsxeyxdock4st" path="res://assets/player/updated_positions/WALKING/6.png" id="8_rdwuy"]
+[ext_resource type="Texture2D" uid="uid://bsl46dt14ymof" path="res://assets/player/updated_positions/WALKING/7.png" id="9_qw54i"]
+[ext_resource type="Texture2D" uid="uid://d3w5orma4c8n4" path="res://assets/player/updated_positions/WALKING/8.png" id="10_c7b0b"]
+[ext_resource type="Script" path="res://scenes/player/idle.gd" id="11_g0wi3"]
+[ext_resource type="Script" path="res://scenes/player/walk.gd" id="12_5f6ie"]
+[ext_resource type="Script" path="res://scenes/player/jump.gd" id="13_0noto"]
+[ext_resource type="Script" path="res://scenes/player/fall.gd" id="16_nvnhc"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ttxin"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_oua7d")
+}],
+"loop": true,
+"name": &"Fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_qq6uy")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_oua7d")
+}],
+"loop": true,
+"name": &"Jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_xtjxl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_e118a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_enc1c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_neg4h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_rdwuy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_qw54i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_c7b0b")
+}],
+"loop": true,
+"name": &"Move",
+"speed": 5.0
+}]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gr28c"]
+size = Vector3(0.69, 1.469, 0.205)
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("state_machine") groups=["player"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.741688, 0, 0)
+script = ExtResource("1_x3aqs")
+state_machine = NodePath("LimboHSM")
+
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." groups=["player"]]
+alpha_cut = 1
+texture_filter = 0
+sprite_frames = SubResource("SpriteFrames_ttxin")
+animation = &"Idle"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." groups=["player"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0795898, 0)
+shape = SubResource("BoxShape3D_gr28c")
+
+[node name="LimboHSM" type="LimboHSM" parent="." groups=["player"]]
+
+[node name="Idle" type="LimboState" parent="LimboHSM" node_paths=PackedStringArray("animated_sprite_3d") groups=["player"]]
+script = ExtResource("11_g0wi3")
+animated_sprite_3d = NodePath("../../AnimatedSprite3D")
+animation = &"Idle"
+
+[node name="Move" type="LimboState" parent="LimboHSM" node_paths=PackedStringArray("animated_sprite_3d") groups=["player"]]
+script = ExtResource("12_5f6ie")
+animated_sprite_3d = NodePath("../../AnimatedSprite3D")
+animation = &"Move"
+
+[node name="Jump" type="LimboState" parent="LimboHSM" node_paths=PackedStringArray("animated_sprite_3d") groups=["player"]]
+script = ExtResource("13_0noto")
+animated_sprite_3d = NodePath("../../AnimatedSprite3D")
+animation = &"Jump"
+
+[node name="Fall" type="LimboState" parent="LimboHSM" node_paths=PackedStringArray("animated_sprite_3d") groups=["player"]]
+script = ExtResource("16_nvnhc")
+animated_sprite_3d = NodePath("../../AnimatedSprite3D")
+animation = &"Fall"
