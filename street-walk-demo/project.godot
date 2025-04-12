@@ -16,8 +16,11 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+DebugTree="*res://Debug.gd"
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 SceneManager="*res://scene_manager.gd"
+GameManager="*res://game_manager.gd"
+GlobalUi="*res://scenes/ui/global_ui.tscn"
 
 [editor]
 

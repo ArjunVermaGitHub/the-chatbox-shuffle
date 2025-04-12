@@ -6,6 +6,7 @@ extends LimboState
 func _enter() -> void:
 	animated_sprite_3d.play(animation)
 	agent.velocity.y = agent.JUMP_VELOCITY	
+	DebugTree.debug_print_tree(get_tree().get_root())
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

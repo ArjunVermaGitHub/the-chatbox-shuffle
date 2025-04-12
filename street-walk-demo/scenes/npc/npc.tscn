@@ -86,11 +86,11 @@ script = ExtResource("16_cm51j")
 expression = "player_in_range == true"
 
 [node name="NPC" type="CharacterBody3D"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.741688, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.741688, 0, 0)
 script = ExtResource("1_w8kth")
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
-transform = Transform3D(-4.37114e-09, 0, -0.1, 0, 0.1, 0, 0.1, 0, -4.37114e-09, 0, 0, 0)
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
 alpha_cut = 1
 texture_filter = 0
 sprite_frames = SubResource("SpriteFrames_84je8")
@@ -200,9 +200,6 @@ event = &"close_button_pressed"
 delay_in_seconds = "0.0"
 
 [node name="DialogueUI" parent="." instance=ExtResource("17_cwpgq")]
-
-[node name="RichTextLabel" parent="DialogueUI/Panel/VBoxContainer/ResponseContainer" index="0"]
-tab_size = 5
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

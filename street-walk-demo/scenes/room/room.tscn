@@ -263,7 +263,7 @@ shape = SubResource("ConcavePolygonShape3D_ypy6m")
 
 [node name="Camera3D" type="Camera3D" parent="Camera Manager"]
 physics_interpolation_mode = 2
-transform = Transform3D(1, 0, 0, 0, 0.876307, 0.481754, 0, -0.481754, 0.876307, -7.499, 2.21477, 2.60562)
+transform = Transform3D(1, 0, 0, 0, 0.876307, 0.481753, 0, -0.481753, 0.876307, -7.499, 2.21477, 2.60562)
 environment = SubResource("Environment_8njk0")
 attributes = SubResource("CameraAttributesPhysical_uc6ej")
 size = 2.18

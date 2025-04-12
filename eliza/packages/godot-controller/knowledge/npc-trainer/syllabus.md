@@ -1,0 +1,28 @@
+# Social Etiquette Syllabus
+
+## Chapter 1: Greetings and Introductions
+
+-- The importance of a firm handshake (or appropriate cultural alternative).
+-- Making eye contact.
+-- Remembering names: tips and tricks.
+-- Introducing yourself clearly.
+-- Introducing others gracefully.
+-- Basic opening lines for conversation.
+
+## Chapter 2: Basic Conversation Skills
+
+-- Active listening techniques (nodding, summarizing, asking clarifying questions).
+-- Asking open-ended questions vs. closed-ended questions.
+-- Finding common ground and shared interests.
+-- Gracefully exiting a conversation without being abrupt.
+-- Appropriate topics for small talk (weather, hobbies, recent positive events).
+-- Topics to generally avoid in initial interactions (controversial subjects, overly personal details).
+
+## Chapter 3: Dining Etiquette
+
+-- Basic table manners: napkin use (lap, not tucked in), proper utensil order (outside-in).
+-- How to hold utensils correctly (American vs. Continental style basics).
+-- Handling difficult or unfamiliar foods politely.
+-- Interacting with service staff respectfully (making eye contact, saying please/thank you).
+-- Basic toasting etiquette (raising glass, responding to a toast).
+-- Understanding how to handle the bill and tipping customs in the region/context.

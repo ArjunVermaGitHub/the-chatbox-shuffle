@@ -1,0 +1,48 @@
+{
+  "name": "godot-controller",
+  "description": "controller for 'The Chatbox Shuffle' game",
+  "version": "1.0.0-beta.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@elizaos/cli": "workspace:*",
+    "@elizaos/core": "workspace:*",
+    "@elizaos/plugin-openrouter": "workspace:*",
+    "@elizaos/plugin-sql": "workspace:*",
+    "dotenv": "^16.4.5",
+    "eliza-godot-plugin": "workspace:*",
+    "zod": "3.24.2"
+  },
+  "devDependencies": {
+    "tsup": "8.4.0",
+    "prettier": "3.5.3"
+  },
+  "scripts": {
+    "start": "bun ../cli/dist/index.js start",
+    "dev": "npx @elizaos/cli dev",
+    "build": "tsup",
+    "lint": "prettier --write ./src",
+    "test": "npx @elizaos/cli test",
+    "deploy": "npx @elizaos/cli deploy",
+    "format": "prettier --write ./src",
+    "format:check": "prettier --check ./src"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "b165ad83e5f7a21bc1edbd83374ca087e3cd6b33"
+}

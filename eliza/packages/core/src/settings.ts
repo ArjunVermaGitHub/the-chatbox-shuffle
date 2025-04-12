@@ -1,168 +1,413 @@
-import { config } from "dotenv";
-import fs from "fs";
-import path from "path";
-import elizaLogger from "./logger.ts";
-
-elizaLogger.info("Loading embedding settings:", {
-    USE_OPENAI_EMBEDDING: process.env.USE_OPENAI_EMBEDDING,
-    USE_OLLAMA_EMBEDDING: process.env.USE_OLLAMA_EMBEDDING,
-    OLLAMA_EMBEDDING_MODEL:
-        process.env.OLLAMA_EMBEDDING_MODEL || "mxbai-embed-large",
-});
-
-// Add this logging block
-elizaLogger.debug("Loading character settings:", {
-    CHARACTER_PATH: process.env.CHARACTER_PATH,
-    ARGV: process.argv,
-    CHARACTER_ARG: process.argv.find((arg) => arg.startsWith("--character=")),
-    CWD: process.cwd(),
-});
-
-interface Settings {
-    [key: string]: string | undefined;
-}
-
-interface NamespacedSettings {
-    [namespace: string]: Settings;
-}
-
-let environmentSettings: Settings = {};
+import crypto from 'node:crypto';
+import { createUniqueUuid } from './entities';
+import { logger } from './logger';
+import type {
+  Character,
+  IAgentRuntime,
+  OnboardingConfig,
+  Setting,
+  World,
+  WorldSettings,
+} from './types';
 
 /**
- * Determines if code is running in a browser environment
- * @returns {boolean} True if in browser environment
+ * Creates a new Setting object based on provided config settings.
+ * @param {Omit<Setting, "value">} configSetting - The configuration settings for the new Setting object.
+ * @returns {Setting} - The newly created Setting object.
  */
-const isBrowser = (): boolean => {
-    return (
-        typeof window !== "undefined" && typeof window.document !== "undefined"
-    );
-};
+/**
+ * Creates a Setting object from a configSetting object by omitting the 'value' property.
+ * 
+ * @param {Omit<Setting, 'value'>} configSetting - The configSetting object to create the Setting from.
+ * @returns {Setting} A new Setting object created from the provided configSetting object.
+ */
+export function createSettingFromConfig(configSetting: Omit<Setting, 'value'>): Setting {
+  return {
+    name: configSetting.name,
+    description: configSetting.description,
+    usageDescription: configSetting.usageDescription || '',
+    value: null,
+    required: configSetting.required,
+    validation: configSetting.validation || null,
+    public: configSetting.public || false,
+    secret: configSetting.secret || false,
+    dependsOn: configSetting.dependsOn || [],
+    onSetAction: configSetting.onSetAction || null,
+    visibleIf: configSetting.visibleIf || null,
+  };
+}
 
 /**
- * Recursively searches for a .env file starting from the current directory
- * and moving up through parent directories (Node.js only)
- * @param {string} [startDir=process.cwd()] - Starting directory for the search
- * @returns {string|null} Path to the nearest .env file or null if not found
+ * Retrieves the salt based on env variable SECRET_SALT
+ *
+ * @returns {string} The salt for the agent.
  */
-export function findNearestEnvFile(startDir = process.cwd()) {
-    if (isBrowser()) return null;
+export function getSalt(): string {
+  const secretSalt =
+    (typeof process !== 'undefined'
+      ? process.env.SECRET_SALT
+      : (import.meta as any).env.SECRET_SALT) || 'secretsalt';
 
-    let currentDir = startDir;
+  if (!secretSalt) {
+    logger.error('SECRET_SALT is not set');
+  }
 
-    // Continue searching until we reach the root directory
-    while (currentDir !== path.parse(currentDir).root) {
-        const envPath = path.join(currentDir, ".env");
+  const salt = secretSalt;
 
-        if (fs.existsSync(envPath)) {
-            return envPath;
+  logger.debug(`Generated salt with length: ${salt.length} (truncated for security)`);
+  return salt;
+}
+
+/**
+ * Common encryption function for string values
+ * @param {string} value - The string value to encrypt
+ * @param {string} salt - The salt to use for encryption
+ * @returns {string} - The encrypted value in 'iv:encrypted' format
+ */
+export function encryptStringValue(value: string, salt: string): string {
+  try {
+    // Check if value is undefined or null
+    if (value === undefined || value === null) {
+      logger.debug('Attempted to encrypt undefined or null value');
+      return value; // Return the value as is (undefined or null)
+    }
+
+    // Check if value is already encrypted (has the format "iv:encrypted")
+    const parts = value.split(':');
+    if (parts.length === 2) {
+      try {
+        // Try to parse the first part as hex to see if it's already encrypted
+        const possibleIv = Buffer.from(parts[0], 'hex');
+        if (possibleIv.length === 16) {
+          // Value is likely already encrypted, return as is
+          logger.debug('Value appears to be already encrypted, skipping re-encryption');
+          return value;
         }
-
-        // Move up to parent directory
-        currentDir = path.dirname(currentDir);
+      } catch (e) {
+        // Not a valid hex string, proceed with encryption
+      }
     }
 
-    // Check root directory as well
-    const rootEnvPath = path.join(path.parse(currentDir).root, ".env");
-    return fs.existsSync(rootEnvPath) ? rootEnvPath : null;
+    // Create key and iv from the salt
+    const key = crypto.createHash('sha256').update(salt).digest().slice(0, 32);
+    const iv = crypto.randomBytes(16);
+
+    // Encrypt the value
+    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+    let encrypted = cipher.update(value, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+
+    // Store IV with the encrypted value so we can decrypt it later
+    return `${iv.toString('hex')}:${encrypted}`;
+  } catch (error) {
+    logger.error(`Error encrypting value: ${error}`);
+    // Return the original value on error
+    return value;
+  }
 }
 
 /**
- * Configures environment settings for browser usage
- * @param {Settings} settings - Object containing environment variables
+ * Common decryption function for string values
+ * @param {string} value - The encrypted value in 'iv:encrypted' format
+ * @param {string} salt - The salt to use for decryption
+ * @returns {string} - The decrypted string value
  */
-export function configureSettings(settings: Settings) {
-    environmentSettings = { ...settings };
+export function decryptStringValue(value: string, salt: string): string {
+  try {
+    // Check if value is undefined or null
+    if (value === undefined || value === null) {
+      logger.debug('Attempted to decrypt undefined or null value');
+      return value; // Return the value as is (undefined or null)
+    }
+
+    // Split the IV and encrypted value
+    const parts = value.split(':');
+    if (parts.length !== 2) {
+      logger.warn(
+        `Invalid encrypted value format - expected 'iv:encrypted', returning original value`
+      );
+      return value; // Return the original value without decryption
+    }
+
+    const iv = Buffer.from(parts[0], 'hex');
+    const encrypted = parts[1];
+
+    // Verify IV length
+    if (iv.length !== 16) {
+      logger.warn(`Invalid IV length (${iv.length}) - expected 16 bytes`);
+      return value; // Return the original value without decryption
+    }
+
+    // Create key from the salt
+    const key = crypto.createHash('sha256').update(salt).digest().slice(0, 32);
+
+    // Decrypt the value
+    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+
+    return decrypted;
+  } catch (error) {
+    logger.error(`Error decrypting value: ${error}`);
+    // Return the encrypted value on error
+    return value;
+  }
 }
 
 /**
- * Loads environment variables from the nearest .env file in Node.js
- * or returns configured settings in browser
- * @returns {Settings} Environment variables object
- * @throws {Error} If no .env file is found in Node.js environment
+ * Applies salt to the value of a setting
+ * Only applies to secret settings with string values
  */
-export function loadEnvConfig(): Settings {
-    // For browser environments, return the configured settings
-    if (isBrowser()) {
-        return environmentSettings;
-    }
+export function saltSettingValue(setting: Setting, salt: string): Setting {
+  const settingCopy = { ...setting };
 
-    // Node.js environment: load from .env file
-    const envPath = findNearestEnvFile();
+  // Only encrypt string values in secret settings
+  if (setting.secret === true && typeof setting.value === 'string' && setting.value) {
+    settingCopy.value = encryptStringValue(setting.value, salt);
+  }
 
-    // attempt to Load the .env file into process.env
-    const result = config(envPath ? { path: envPath } : {});
-
-    if (!result.error) {
-        elizaLogger.log(`Loaded .env file from: ${envPath}`);
-    }
-
-    // Parse namespaced settings
-    const namespacedSettings = parseNamespacedSettings(process.env as Settings);
-
-    // Attach to process.env for backward compatibility
-    Object.entries(namespacedSettings).forEach(([namespace, settings]) => {
-        process.env[`__namespaced_${namespace}`] = JSON.stringify(settings);
-    });
-
-    return process.env as Settings;
+  return settingCopy;
 }
 
 /**
- * Gets a specific environment variable
- * @param {string} key - The environment variable key
- * @param {string} [defaultValue] - Optional default value if key doesn't exist
- * @returns {string|undefined} The environment variable value or default value
+ * Removes salt from the value of a setting
+ * Only applies to secret settings with string values
  */
-export function getEnvVariable(
-    key: string,
-    defaultValue?: string
-): string | undefined {
-    if (isBrowser()) {
-        return environmentSettings[key] || defaultValue;
-    }
-    return process.env[key] || defaultValue;
+export function unsaltSettingValue(setting: Setting, salt: string): Setting {
+  const settingCopy = { ...setting };
+
+  // Only decrypt string values in secret settings
+  if (setting.secret === true && typeof setting.value === 'string' && setting.value) {
+    settingCopy.value = decryptStringValue(setting.value, salt);
+  }
+
+  return settingCopy;
 }
 
 /**
- * Checks if a specific environment variable exists
- * @param {string} key - The environment variable key
- * @returns {boolean} True if the environment variable exists
+ * Applies salt to all settings in a WorldSettings object
  */
-export function hasEnvVariable(key: string): boolean {
-    if (isBrowser()) {
-        return key in environmentSettings;
-    }
-    return key in process.env;
+export function saltWorldSettings(worldSettings: WorldSettings, salt: string): WorldSettings {
+  const saltedSettings: WorldSettings = {};
+
+  for (const [key, setting] of Object.entries(worldSettings)) {
+    saltedSettings[key] = saltSettingValue(setting, salt);
+  }
+
+  return saltedSettings;
 }
 
-// Initialize settings based on environment
-export const settings = isBrowser() ? environmentSettings : loadEnvConfig();
+/**
+ * Removes salt from all settings in a WorldSettings object
+ */
+export function unsaltWorldSettings(worldSettings: WorldSettings, salt: string): WorldSettings {
+  const unsaltedSettings: WorldSettings = {};
 
-elizaLogger.info("Parsed settings:", {
-    USE_OPENAI_EMBEDDING: settings.USE_OPENAI_EMBEDDING,
-    USE_OPENAI_EMBEDDING_TYPE: typeof settings.USE_OPENAI_EMBEDDING,
-    USE_OLLAMA_EMBEDDING: settings.USE_OLLAMA_EMBEDDING,
-    USE_OLLAMA_EMBEDDING_TYPE: typeof settings.USE_OLLAMA_EMBEDDING,
-    OLLAMA_EMBEDDING_MODEL:
-        settings.OLLAMA_EMBEDDING_MODEL || "mxbai-embed-large",
-});
+  for (const [key, setting] of Object.entries(worldSettings)) {
+    unsaltedSettings[key] = unsaltSettingValue(setting, salt);
+  }
 
-export default settings;
+  return unsaltedSettings;
+}
 
-// Add this function to parse namespaced settings
-function parseNamespacedSettings(env: Settings): NamespacedSettings {
-    const namespaced: NamespacedSettings = {};
+/**
+ * Updates settings state in world metadata
+ */
+export async function updateWorldSettings(
+  runtime: IAgentRuntime,
+  serverId: string,
+  worldSettings: WorldSettings
+): Promise<boolean> {
+  try {
+    const worldId = createUniqueUuid(runtime, serverId);
+    const world = await runtime.getWorld(worldId);
 
-    for (const [key, value] of Object.entries(env)) {
-        if (!value) continue;
-
-        const [namespace, ...rest] = key.split(".");
-        if (!namespace || rest.length === 0) continue;
-
-        const settingKey = rest.join(".");
-        namespaced[namespace] = namespaced[namespace] || {};
-        namespaced[namespace][settingKey] = value;
+    if (!world) {
+      logger.error(`No world found for server ${serverId}`);
+      return false;
     }
 
-    return namespaced;
+    // Initialize metadata if it doesn't exist
+    if (!world.metadata) {
+      world.metadata = {};
+    }
+
+    // Apply salt to settings before saving
+    const salt = getSalt();
+    const saltedSettings = saltWorldSettings(worldSettings, salt);
+
+    // Update settings state
+    world.metadata.settings = saltedSettings;
+
+    // Save updated world
+    await runtime.updateWorld(world);
+
+    return true;
+  } catch (error) {
+    logger.error(`Error updating settings state: ${error}`);
+    return false;
+  }
 }
+
+/**
+ * Gets settings state from world metadata
+ */
+export async function getWorldSettings(
+  runtime: IAgentRuntime,
+  serverId: string
+): Promise<WorldSettings | null> {
+  try {
+    const worldId = createUniqueUuid(runtime, serverId);
+    const world = await runtime.getWorld(worldId);
+
+    if (!world || !world.metadata?.settings) {
+      return null;
+    }
+
+    // Get settings from metadata
+    const saltedSettings = world.metadata.settings as WorldSettings;
+
+    // Remove salt from settings before returning
+    const salt = getSalt();
+    return unsaltWorldSettings(saltedSettings, salt);
+  } catch (error) {
+    logger.error(`Error getting settings state: ${error}`);
+    return null;
+  }
+}
+
+/**
+ * Initializes settings configuration for a server
+ */
+export async function initializeOnboarding(
+  runtime: IAgentRuntime,
+  world: World,
+  config: OnboardingConfig
+): Promise<WorldSettings | null> {
+  try {
+    // Check if settings state already exists
+    if (world.metadata?.settings) {
+      logger.info(`Onboarding state already exists for server ${world.serverId}`);
+      // Get settings from metadata and remove salt
+      const saltedSettings = world.metadata.settings as WorldSettings;
+      const salt = getSalt();
+      return unsaltWorldSettings(saltedSettings, salt);
+    }
+
+    // Create new settings state
+    const worldSettings: WorldSettings = {};
+
+    // Initialize settings from config
+    if (config.settings) {
+      for (const [key, configSetting] of Object.entries(config.settings)) {
+        worldSettings[key] = createSettingFromConfig(configSetting);
+      }
+    }
+
+    // Save settings state to world metadata
+    if (!world.metadata) {
+      world.metadata = {};
+    }
+
+    // No need to salt here as the settings are just initialized with null values
+    world.metadata.settings = worldSettings;
+
+    await runtime.updateWorld(world);
+
+    logger.info(`Initialized settings config for server ${world.serverId}`);
+    return worldSettings;
+  } catch (error) {
+    logger.error(`Error initializing settings config: ${error}`);
+    return null;
+  }
+}
+
+/**
+ * Encrypts sensitive data in a Character object
+ * @param {Character} character - The character object to encrypt secrets for
+ * @param {IAgentRuntime} runtime - The runtime information needed for salt generation
+ * @returns {Character} - A copy of the character with encrypted secrets
+ */
+export function encryptedCharacter(character: Character): Character {
+  // Create a deep copy to avoid modifying the original
+  const encryptedChar = JSON.parse(JSON.stringify(character));
+  const salt = getSalt();
+
+  // Encrypt character.settings.secrets if it exists
+  if (encryptedChar.settings?.secrets) {
+    encryptedChar.settings.secrets = encryptObjectValues(encryptedChar.settings.secrets, salt);
+  }
+
+  // Encrypt character.secrets if it exists
+  if (encryptedChar.secrets) {
+    encryptedChar.secrets = encryptObjectValues(encryptedChar.secrets, salt);
+  }
+
+  return encryptedChar;
+}
+
+/**
+ * Decrypts sensitive data in a Character object
+ * @param {Character} character - The character object with encrypted secrets
+ * @param {IAgentRuntime} runtime - The runtime information needed for salt generation
+ * @returns {Character} - A copy of the character with decrypted secrets
+ */
+export function decryptedCharacter(character: Character, runtime: IAgentRuntime): Character {
+  // Create a deep copy to avoid modifying the original
+  const decryptedChar = JSON.parse(JSON.stringify(character));
+  const salt = getSalt();
+
+  // Decrypt character.settings.secrets if it exists
+  if (decryptedChar.settings?.secrets) {
+    decryptedChar.settings.secrets = decryptObjectValues(decryptedChar.settings.secrets, salt);
+  }
+
+  // Decrypt character.secrets if it exists
+  if (decryptedChar.secrets) {
+    decryptedChar.secrets = decryptObjectValues(decryptedChar.secrets, salt);
+  }
+
+  return decryptedChar;
+}
+
+/**
+ * Helper function to encrypt all string values in an object
+ * @param {Record<string, any>} obj - Object with values to encrypt
+ * @param {string} salt - The salt to use for encryption
+ * @returns {Record<string, any>} - Object with encrypted values
+ */
+export function encryptObjectValues(obj: Record<string, any>, salt: string): Record<string, any> {
+  const result: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === 'string' && value) {
+      result[key] = encryptStringValue(value, salt);
+    } else {
+      result[key] = value;
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Helper function to decrypt all string values in an object
+ * @param {Record<string, any>} obj - Object with encrypted values
+ * @param {string} salt - The salt to use for decryption
+ * @returns {Record<string, any>} - Object with decrypted values
+ */
+export function decryptObjectValues(obj: Record<string, any>, salt: string): Record<string, any> {
+  const result: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === 'string' && value) {
+      result[key] = decryptStringValue(value, salt);
+    } else {
+      result[key] = value;
+    }
+  }
+
+  return result;
+}
+
+export { decryptStringValue as decryptSecret };

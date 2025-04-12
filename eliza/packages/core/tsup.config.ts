@@ -1,24 +1,33 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from 'tsup';
 
 export default defineConfig({
-    entry: ["src/index.ts"],
-    outDir: "dist",
-    sourcemap: true,
-    clean: true,
-    format: ["esm"], // Ensure you're targeting CommonJS
-    platform: "node",
-    target: "node18",
-    bundle: true,
-    splitting: true, // Add this for better code splitting
-    dts: true, // Generate declaration files
-    external: [
-        "dotenv", // Externalize dotenv to prevent bundling
-        "fs", // Externalize fs to use Node.js built-in module
-        "path", // Externalize other built-ins if necessary
-        "http",
-        "https",
-        // Add other modules you want to externalize
-        "onnxruntime-node",
-        "sharp",
-    ],
+  entry: ['src/index.ts'],
+  outDir: 'dist',
+  clean: true,
+  format: ['esm'],
+  target: 'node18',
+  dts: false,
+  external: [
+    'dotenv',
+    'fs',
+    'path',
+    'node:fs',
+    'node:path',
+    'node:crypto',
+    'node:web',
+    'node:stream',
+    'node:buffer',
+    'node:util',
+    'node:events',
+    'node:url',
+    'node:http',
+    'node:https',
+    'http',
+    'https',
+    'sharp',
+    '@solana/web3.js',
+    'zod',
+    '@hapi/shot',
+  ],
+  sourcemap: false,
 });
