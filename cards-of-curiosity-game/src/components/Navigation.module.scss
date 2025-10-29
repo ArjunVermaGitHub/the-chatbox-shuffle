@@ -1,0 +1,251 @@
+@import '../app/_variables';  /* Import global variables if needed */
+
+/* Navigation Bar */
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: $navbar-background-color; /* From _variables.scss */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $navbar-logo-color; /* From _variables.scss */
+  flex-shrink: 0;
+  
+  a{
+    text-decoration: none;
+    color: inherit; /* Inherit color from parent */
+  }
+}
+
+.navLinks {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.navLink {
+  color: $text-color;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  &:hover {
+    background-color: rgba(31, 120, 255, 0.1);
+    color: $primary-color;
+  }
+}
+
+.navText {
+  display: inline;
+}
+
+.navIcon {
+  display: none;
+  font-size: 1.2rem;
+}
+
+.authButtons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.textBtn {
+  padding: 8px 16px;
+  background-color: transparent;
+  color: $primary-color; /* From _variables.scss */
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    color: $hover-color; /* From _variables.scss */
+  }
+}
+
+.btnText {
+  display: inline;
+}
+
+.btnIcon {
+  display: none;
+  font-size: 1.1rem;
+}
+
+.userText {
+  display: inline;
+}
+
+.userIcon {
+  display: none;
+  font-size: 1.1rem;
+}
+
+.signInBtn {
+  background-color: $primary-color; /* Example color */
+}
+
+.userBtn {
+  background-color: $user-button-color; /* Example color */
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.userName {
+  color: $text-color;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+// Mobile responsiveness
+@media (max-width: 768px) {
+  .navigation {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  
+  .logo {
+    font-size: 1.2rem;
+  }
+  
+  .navLinks {
+    gap: 12px;
+  }
+  
+  .navLink {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+  }
+  
+  .authButtons {
+    gap: 8px;
+  }
+  
+  .textBtn {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+  }
+  
+  .userName {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .navigation {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    flex-wrap: nowrap;
+  }
+  
+  .navText {
+    display: none;
+  }
+  
+  .navIcon {
+    display: inline;
+  }
+  
+  .btnText {
+    display: none;
+  }
+  
+  .btnIcon {
+    display: inline;
+  }
+  
+  .userText {
+    display: none;
+  }
+  
+  .userIcon {
+    display: inline;
+  }
+  
+  .logo {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .navLinks {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  
+  .navLink {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .authButtons {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  
+  .textBtn {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .userSection {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navigation {
+    padding: 4px 8px;
+    gap: 6px;
+  }
+  
+  .logo {
+    font-size: 1rem;
+  }
+  
+  .navLinks {
+    gap: 6px;
+  }
+  
+  .navLink {
+    padding: 4px 6px;
+    font-size: 0.75rem;
+  }
+  
+  .textBtn {
+    padding: 4px 6px;
+    font-size: 0.75rem;
+  }
+  
+  .userName {
+    font-size: 0.7rem;
+  }
+}

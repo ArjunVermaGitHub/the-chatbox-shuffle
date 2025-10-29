@@ -1,0 +1,143 @@
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --accent-color: #baff70;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+.dark-mode{
+  filter: invert(1) hue-rotate(180deg);
+  img{
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-nunito), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: #0070f3; /* Make the link color blue, or any color you prefer */
+  text-decoration: underline; /* Add underline to indicate the link */
+}
+
+a:hover {
+  color: #0050c3; /* Darker shade when hovering */
+  text-decoration: underline; /* Keep the underline on hover */
+}
+
+a:active {
+  color: #003366; /* Even darker color when the link is clicked */
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+/* globals.scss */
+
+/* Global font settings */
+body {
+  font-family: var(--font-nunito), sans-serif;
+  background-image: url('/watercolor-bg.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #333;
+}
+
+.main-content {
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Navigation Styles */
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.navigation .logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.navigation .auth-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.sign-in-btn,
+.sign-up-btn,
+.user-btn {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sign-in-btn:hover,
+.sign-up-btn:hover,
+.user-btn:hover {
+  background-color: #45a049;
+}
+
+.sign-in-btn {
+  background-color: #0073e6;
+}
+
+.sign-up-btn {
+  background-color: #ff9900;
+}
+
+.user-btn {
+  background-color: #1a73e8;
+}
+
+.info-banner {
+  background-color: #fff7d6; /* Very soft yellow */
+  padding: 1rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+  color: #333333; /* Darker text for contrast */
+  border: 2px solid #d9c580; /* Muted, softer yellow for the border */
+}

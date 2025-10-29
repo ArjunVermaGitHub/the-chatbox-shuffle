@@ -1,0 +1,205 @@
+@import '../app/_variables';
+
+.tabsContainer {
+  margin-bottom: 40px;
+  padding: 0 10px;
+}
+
+.tabsHeader {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.tabsTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+.tabsSubtitle {
+  font-size: 1.1rem;
+  color: #2a2a2a;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tabWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.purchaseSection {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.freeLabel {
+  color: #4CAF50;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.tab {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--category-color, rgba(255, 255, 255, 0.2));
+  border-radius: 12px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--category-color, transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--category-color, rgba(255, 255, 255, 0.3));
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    
+    &::before {
+      transform: scaleX(1);
+    }
+  }
+  
+  &.active {
+    background: linear-gradient(135deg, var(--category-color, $primary-color) 0%, rgba(0, 0, 0, 0.2) 100%);
+    border-color: var(--category-color, $primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    
+    &::before {
+      transform: scaleX(1);
+    }
+  }
+}
+
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.tabName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.tabCount {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.mixAllTab {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(255, 107, 107, 0.1) 100%);
+  
+  &:hover {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.3) 0%, rgba(255, 107, 107, 0.2) 100%);
+  }
+  
+  &.active {
+    background: linear-gradient(135deg, #FF6B6B 0%, rgba(0, 0, 0, 0.2) 100%);
+  }
+}
+
+// Mobile responsiveness
+@media (max-width: 1024px) {
+  .tabs {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabsContainer {
+    padding: 0 5px;
+  }
+  
+  .tabsTitle {
+    font-size: 1.8rem;
+  }
+  
+  .tabsSubtitle {
+    font-size: 0.9rem;
+  }
+  
+  .tabs {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+  }
+  
+  .tab {
+    padding: 12px;
+    border-radius: 10px;
+  }
+  
+  .tabName {
+    font-size: 0.9rem;
+  }
+  
+  .tabCount {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabsContainer {
+    padding: 0 2px;
+  }
+  
+  .tabsTitle {
+    font-size: 1.5rem;
+  }
+  
+  .tabsSubtitle {
+    font-size: 0.8rem;
+  }
+  
+  .tabs {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .tab {
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .tabName {
+    font-size: 0.85rem;
+  }
+  
+  .tabCount {
+    font-size: 0.7rem;
+  }
+}

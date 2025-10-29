@@ -1,0 +1,44 @@
+.darkModeButton {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    background-color: rgba(31, 120, 255, 0.1);
+    color: #1a5fcc;
+  }
+}
+
+.darkModeText {
+  display: inline;
+}
+
+.darkModeIcon {
+  display: none;
+  font-size: 1.1rem;
+}
+
+// Mobile styles - show only icon
+@media (max-width: 640px) {
+  .darkModeText {
+    display: none;
+  }
+  
+  .darkModeIcon {
+    display: inline;
+  }
+  
+  .darkModeButton {
+    padding: 8px 12px;
+  }
+}
+  
