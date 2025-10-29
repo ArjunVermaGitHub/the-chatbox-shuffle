@@ -1,18 +1,13 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Nunito } from "next/font/google";
 import "./globals.scss";
 import { ClerkProvider } from '@clerk/nextjs';
 import { Providers } from '@/components/Providers';
-import { Navigation } from '@/components/Navigation';
-import AppWithSplash from '@/components/AppWithSplash';
+import AppFlow from '@/components/AppFlow';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const nunito = Nunito({
+  variable: "--font-nunito",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 export default function RootLayout({ children }) {
@@ -36,21 +31,21 @@ export default function RootLayout({ children }) {
             />
           </head>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            className={`${nunito.variable} antialiased`}
             style={{ 
               height: '100vh', 
               display: 'flex', 
               flexDirection: 'column',
               margin: 0,
-              padding: 0
+              padding: 0,
+              fontFamily: 'var(--font-nunito), sans-serif'
             }}
           >
-            <AppWithSplash>
-              <Navigation />
+            <AppFlow>
               <main className="main-content" style={{ flex: 1, overflow: 'hidden' }}>
                 {children}
               </main>
-            </AppWithSplash>
+            </AppFlow>
           </body>
         </html>
       </Providers>
