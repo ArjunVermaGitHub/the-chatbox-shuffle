@@ -24,8 +24,7 @@ export default function HomeMenu() {
         router.push('/choose-set');
         break;
       case 'suggest':
-        // TODO: Implement suggest questions
-        alert('Suggest questions feature coming soon!');
+        router.push('/request-question');
         break;
       case 'share':
         setShowShareModal(true);
