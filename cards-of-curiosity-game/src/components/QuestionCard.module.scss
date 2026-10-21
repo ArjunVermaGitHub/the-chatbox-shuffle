@@ -1,0 +1,205 @@
+.cardContainer {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.questionOverlay {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  padding: 3rem;
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.cardHeader {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.progress {
+  color: var(--accent-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.categoryTitle {
+  color: var(--accent-color);
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: var(--accent-color);
+  font-size: 2.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  color: var(--accent-color);
+  transform: scale(1.1);
+}
+
+.cardContent {
+  width: 100%;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.questionText {
+  color: var(--accent-color);
+  font-size: clamp(1.1rem, 4vw, 2rem);
+  font-weight: 400;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.cardControls {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.controlBtn {
+  background: #00ff00;
+  color: #000000;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.controlBtn:hover:not(.disabled) {
+  background: #00cc00;
+  transform: scale(1.1);
+}
+
+.controlBtn.disabled {
+  background: #666666;
+  color: #999999;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.previousBtn {
+  // Left arrow button
+}
+
+.nextBtn {
+  // Right arrow button
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .cardContainer {
+    padding: 1rem;
+  }
+  
+  .questionOverlay {
+    padding: 2rem;
+    gap: 1.5rem;
+  }
+  
+  .cardHeader {
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .progress {
+    font-size: 0.9rem;
+  }
+  
+  .categoryTitle {
+    font-size: 1.3rem;
+  }
+  
+  .closeButton {
+    font-size: 2rem;
+    width: 35px;
+    height: 35px;
+  }
+  
+  .questionText {
+    font-size: clamp(1rem, 5vw, 1.4rem);
+    line-height: 1.5;
+  }
+  
+  .controlBtn {
+    width: 50px;
+    height: 50px;
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .questionOverlay {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+  
+  .cardHeader {
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .progress {
+    font-size: 0.8rem;
+  }
+  
+  .categoryTitle {
+    font-size: 1.1rem;
+  }
+  
+  .closeButton {
+    font-size: 1.8rem;
+    width: 30px;
+    height: 30px;
+  }
+  
+  .questionText {
+    font-size: clamp(0.9rem, 5vw, 1.2rem);
+    line-height: 1.4;
+  }
+  
+  .controlBtn {
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+  }
+}

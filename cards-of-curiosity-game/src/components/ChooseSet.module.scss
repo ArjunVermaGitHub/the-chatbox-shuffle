@@ -1,0 +1,141 @@
+.container {
+  min-height: 100vh;
+  background-image: url('/watercolor-bg.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.backButton {
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--accent-color);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 1rem;
+  transition: all 0.3s ease;
+}
+
+.backButton:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.titleSection {
+  flex: 1;
+  text-align: center;
+}
+
+.title {
+  color: var(--accent-color);
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.subtitle {
+  color: #ffffff;
+  font-size: 1.2rem;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.modesContainer {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  flex: 1;
+  align-items: center;
+}
+
+.modeCard {
+  background: transparent;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  min-width: 300px;
+}
+
+.modeCard:hover {
+  /* No hover effects */
+}
+
+.modeIcon {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.iconImage {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.modeTitle {
+  color: var(--accent-color);
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0 0 1rem 0;
+}
+
+.modeDescription {
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .modesContainer {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .modeCard {
+    min-width: 280px;
+    padding: 2rem 1.5rem;
+  }
+  
+  .modeIcon {
+    font-size: 3rem;
+  }
+  
+  .modeTitle {
+    font-size: 1.5rem;
+  }
+  
+  .modeDescription {
+    font-size: 1rem;
+  }
+}

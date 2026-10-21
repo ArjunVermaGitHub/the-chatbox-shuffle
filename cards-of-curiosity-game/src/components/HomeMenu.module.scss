@@ -1,0 +1,128 @@
+.homeMenu {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+
+.menuContainer {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 80%;
+  max-width: 500px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.menuTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #00FF88;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: var(--font-nunito), sans-serif;
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.menuGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border: 2px solid #00FF88;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.menuOption {
+  padding: 1.5rem;
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #00FF88;
+  font-family: var(--font-nunito), sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  border-right: 1px solid #00FF88;
+  border-bottom: 1px solid #00FF88;
+  position: relative;
+  
+  &:nth-child(even) {
+    border-right: none;
+  }
+  
+  &:nth-child(n+5) {
+    border-bottom: none;
+  }
+  
+  &:hover {
+    background: rgba(0, 255, 136, 0.1);
+    transform: scale(1.02);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Add grid lines
+.menuGrid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background: #00FF88;
+  transform: translateX(-50%);
+}
+
+.menuGrid::after {
+  content: '';
+  position: absolute;
+  top: 33.33%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #00FF88;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .menuContainer {
+    width: 90%;
+    padding: 1.5rem;
+  }
+  
+  .menuTitle {
+    font-size: 1.8rem;
+  }
+  
+  .menuOption {
+    padding: 1.2rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .menuContainer {
+    width: 95%;
+    padding: 1rem;
+  }
+  
+  .menuTitle {
+    font-size: 1.6rem;
+  }
+  
+  .menuOption {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+}
